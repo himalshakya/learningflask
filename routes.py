@@ -14,7 +14,10 @@ def index():
 
 @app.route("/home")
 def home():
-    return render_template("home.html")
+    if 'email' in session:
+        return render_template("home.html")
+    else:
+        return redirect(url_for('login'))
 
 @app.route("/about")
 def about():
@@ -22,6 +25,9 @@ def about():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    if 'email' in session:
+        return redirect(url_for('home'))
+
     form = LoginForm()
 
     if request.method == 'POST':
@@ -47,6 +53,9 @@ def logout():
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
+    if 'email' in session:
+        return redirect(url_for('home'))
+
     form = SignupForm()
 
     if request.method == 'POST':
@@ -61,7 +70,6 @@ def signup():
             return redirect(url_for('home'))
     elif request.method == 'GET':
         return render_template("signup.html", form=form)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
